@@ -1,8 +1,4 @@
-# Boxit
+# CBL
 
-Image annotation application 
-
-## Dependencies
-
-Jquery
+Nodejs test
 
