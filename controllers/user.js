@@ -5,9 +5,6 @@ const jwt = require('jsonwebtoken');
 const SECRET = require('../config').secret;
 const { host } = require("../config");
 const mongoose = require('mongoose');
-const AWS = require('aws-sdk');
-const { s3Key, s3Secret, bucketDpName } = require("../config");
-const imagePath = `https://${bucketDpName}.s3.amazonaws.com/`;
 const { roles } = require("../lib/roles");
 
 exports.signup = async (req, res) => {
