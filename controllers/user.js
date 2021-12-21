@@ -5,9 +5,8 @@ const jwt = require('jsonwebtoken');
 const SECRET = require('../config').secret;
 const { host } = require("../config");
 const mongoose = require('mongoose');
-const { roles } = require("../lib/roles");
 
-exports.signup = async (req, res) => {
+exports.signup = async (req, res) => {  
     try {
 
         // Validate parameters
@@ -18,20 +17,28 @@ exports.signup = async (req, res) => {
         }
 
 
-        // Create user with Organization details along with it
-        const user = new User({
-            email: req.body.email,
-            name: req.body.name,
-            password: req.body.password,
-            location:{ type: "Point", coordinates: [req.body.coordinates[0], req.body.coordinates[0]] }
-        });
+        let findUser = await User.findOne({
+            email: req.body.email
+        }).exec();
 
-        const savedUser = await user.save();
+        if(!findUser){
 
-        return res.json(await savedUser.toAuthJSON());
+            // Create user 
+            const user = new User({
+                email: req.body.email,
+                name: req.body.name,
+                password: req.body.password,
+                location:{ type: "Point", coordinates: [req.body.coordinates[0], req.body.coordinates[0]] }
+            });
+            const savedUser = await user.save();
+            if(savedUser){
+                return res.status(200).json({message:"User created successfully"});
+            }
+        }else{
+            return res.status(400).json({message:"user already exists"});
+        }
     } catch (error) {
         //const { errorMessage, status } = handleErrors(error, "email");
-
         return res.status(400).json(error);
     }
 }
@@ -83,9 +90,9 @@ exports.login = async (req, res) => {
             return res.status(400).json({ inline_message: 'wrong password' })
         }
         let obj = await user.toAuthJSON();
-        if (obj.profileImage) {
-            obj.profileImage = `${imagePath}${obj.profileImage}`;
-        }
+        // if (obj.profileImage) {
+        //     obj.profileImage = `${imagePath}${obj.profileImage}`;
+        // }
 
         return res.json(obj);
     } catch (error) {
@@ -95,7 +102,7 @@ exports.login = async (req, res) => {
     }
 }
 
-exports.updateProfile = async (req, res) => {
+exports.upload = async (req, res) => {
     try {
         const file = req.file;
 

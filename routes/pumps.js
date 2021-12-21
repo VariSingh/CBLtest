@@ -1,8 +1,8 @@
 const express = require('express');
 const pumpsRouter = express.Router();
 const pumpController = require('../controllers/pump');
-const { authPassword, authenticate } = require("../lib/auth");
+const { authenticate } = require("../lib/auth");
 
-pumpsRouter.get('/', (req, res) => pumpController.fetchNearestPumps(req,res));
+pumpsRouter.get('/',authenticate, (req, res) => pumpController.fetchNearestPumps(req,res));
 
 module.exports = pumpsRouter;

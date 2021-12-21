@@ -42,10 +42,6 @@ UserSchema.methods.generateJWT = function () {
     let today = new Date();
     let exp = new Date(today);
     let obj = {};
-    if(this.companies.length==1){
-        obj.role = this.companies[0].role;
-        obj.company = this.companies[0].company._id;
-    }
     exp.setDate(today.getDate() + 1); 
     return jwt.sign({
         sub: this._id,
@@ -70,21 +66,12 @@ UserSchema.methods.JWTPassToken = function () {
 };
 
 UserSchema.methods.toAuthJSON = async function () {
-    let result = await this.populate('companies.company').execPopulate();
-    console.log("result ", result);
     let obj = {};
-    if(result.companies.length==1){
-        obj.role = result.companies[0].role;
-        obj.company = result.companies[0].company._id;
-    }
     return {
-        companies: [...result.companies],
         name: this.name,
         email: this.email,
         token: this.generateJWT(),
-        title: this.title,
-        profileImage: this.profileImage,
-        ...obj
+        profileImage: this.profileImage
     }
 };
 

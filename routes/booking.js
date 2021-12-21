@@ -14,5 +14,5 @@ const { authenticate } = require("../lib/auth");
 //usersRouter.post('/', (req, res) => userController.signup(req,res));
 //usersRouter.post('/login', (req, res) => userController.login(req,res));
 
-bookingRouter.post('/', (req, res) => bookingController.create(req,res));
+bookingRouter.post('/',authenticate, (req, res) => bookingController.create(req,res));
 module.exports = bookingRouter;
